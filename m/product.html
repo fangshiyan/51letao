@@ -92,72 +92,42 @@
     <script src="./js/jquery.min.js"></script>
     <script src="./js/template-web.js"></script>
     <script>
-
-        // 根据商品id获取商品信息
-
-        // 1. 获取地址上的商品 id
-        // console.log(location)
-        // 通过 location.search 可以获取地址上 ? 后面数据
-        // ? 后面的参数符合某种格式 key=val&key1=val1...
         var search = location.search.slice(1);
-        
-        // 以 & 符号为分隔拆分成数组
         var arr = search.split('&');
-
-        var o = {};
-        // 遍历数据对单元以 = 符号二次拆分
         for(var i=0; i<arr.length; i++) {
-            // console.log(arr[i]);
-            
-            // 二次拆分
             var tmp = arr[i].split('=');
-            // console.log(tmp)
-            // tmp[0] key
-            // tmp[1] val
             o[tmp[0]] = tmp[1];
         }
-
-        // console.log(o)
-
-        // 2. 发送至服务端
         $.ajax({
             url: '/api/product/queryProductDetail',
             type: 'get',
             data: {
-                // 地址上解析到的参数 pid
                 id: o.pid
             },
-            // 3. 等待结果
             success: function (info) {
                 console.log(info)
-
-                // 对数据进行处理
                 info.dis = (info.price / info.oldPrice * 10).toFixed(1);
 
                 var html = template('tpl', info);
                 $('#detail').html(html)
 
                 mui('.mui-slider').slider({
-                    interval:3000 //自动轮播周期，若为0则不自动播放，默认为0；
+                    interval:3000 
                 });
                 mui('.mui-scroll-wrapper').scroll({
-                    scrollY: true, //是否竖向滚动
-                    scrollX: false, //是否横向滚动
-                    startX: 0, //初始化时滚动至x
-                    startY: 0, //初始化时滚动至y
-                    indicators: false, //是否显示滚动条
-                    deceleration:0.0006, //阻尼系数,系数越小滑动越灵敏
-                    bounce: true, //是否启用回弹
+                    scrollY: true, 
+                    scrollX: false,
+                    startX: 0, 
+                    startY: 0, 
+                    indicators: false, 
+                    deceleration:0.0006, 
+                    bounce: true, 
                 });
             }
         });
 
         // 添加购物车
         $('.btn_addCart').on('click', function () {
-            // 1. 获取参数（DOM中获取）
-            
-            // 可先模拟一些参数（不管DOM）
-            // 2. 发送到服务端
             $.ajax({
                 url: '/api/cart/addCart',
                 type: 'post',
@@ -166,13 +136,11 @@
                     num: 1,
                     size: 30
                 },
-                // 3. 等待响应
                 success: function (info) {
                     console.log(info)
 
                     if(info.error) {
                         alert('请先登录!');
-                        // 去登录
                         location.href = '/m/user/login.html?url=' + location.href;
                     }
                 }
